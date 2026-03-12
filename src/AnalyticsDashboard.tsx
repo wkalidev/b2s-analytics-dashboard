@@ -10,10 +10,10 @@ const CONTRACT = 'SP936YWJPST8GB8FFRCN7CC6P2YR5K6NNBAARQ96';
 const TOKEN_CONTRACT = `${CONTRACT}.b2s-token`;
 const POOL_CONTRACT = `${CONTRACT}.b2s-liquidity-pool-v5`;
 const REWARDS_CONTRACT = `${CONTRACT}.b2s-rewards-distributor-v3`;
-const BRIDGE_CONTRACT = `${CONTRACT}.b2s-fee-router-v2`; // sBTC bridge contract
+const BRIDGE_CONTRACT = `${CONTRACT}.b2s-fee-router`; // Fixed: removed -v2 suffix
 
 const COLORS = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
-const BTC_COLOR = '#f7931a'; // Bitcoin orange for sBTC
+const BTC_COLOR = '#f7931a';
 
 interface Metrics {
   totalTxCount: number;
@@ -72,19 +72,14 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   const [holderDist, setHolderDist] = useState<HolderBucket[]>([]);
   const [lastUpdate, setLastUpdate] = useState<string>('');
 
-  // Parse BTC amount from memo or transaction data
   const parseBTCAmount = (tx: any): number => {
     try {
-      // Look for BTC amount in transaction metadata
-      // This assumes the bridge contract emits events with BTC amounts
-      // Adjust based on actual contract event structure
       if (tx.events && tx.events.length > 0) {
         for (const event of tx.events) {
           if (event.type === 'contract_event' && 
               event.contract_event?.topic === 'bridge-inbound') {
-            // Parse amount from event data - adjust based on actual event structure
             const amount = parseInt(event.contract_event?.value?.repr?.match(/\d+/)?.[0] || '0');
-            return amount / 100_000_000; // Convert sats to BTC
+            return amount / 100_000_000;
           }
         }
       }
@@ -112,7 +107,6 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         bridgeTx.json(),
       ]);
 
-      // Total supply from FT metadata
       const metaRes = await fetch(`${HIRO_API}/metadata/v1/ft/${TOKEN_CONTRACT}`);
       const meta = await metaRes.json();
 
@@ -123,8 +117,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         poolTxCount: poolData.total || 0,
         rewardsTxCount: rewardsData.total || 0,
         bridgeTxCount: bridgeData.total || 0,
-        bridgeVolumeBTC: 0, // Will be updated in fetchBridgeHistory
-        totalBridgedBTC: 0, // Will be updated in fetchBridgeHistory
+        bridgeVolumeBTC: 0,
+        totalBridgedBTC: 0,
         loading: false,
       });
 
@@ -171,14 +165,12 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
 
   const fetchBridgeHistory = useCallback(async () => {
     try {
-      // Fetch bridge transactions with event data
       const res = await fetch(
         `${HIRO_API}/extended/v1/address/${BRIDGE_CONTRACT}/transactions?limit=100&offset=0`
       );
       const data = await res.json();
       const txs: any[] = data.results || [];
 
-      // Group by day and calculate volume
       const byDay: Record<string, { volume: number; count: number }> = {};
       let totalVolume = 0;
 
@@ -197,14 +189,12 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         }
       });
 
-      // Update metrics with bridge volume
       setMetrics(prev => ({
         ...prev,
         bridgeVolumeBTC: Object.values(byDay).reduce((sum, day) => sum + day.volume, 0),
         totalBridgedBTC: totalVolume,
       }));
 
-      // Last 30 days for bridge history
       const sorted = Object.entries(byDay)
         .sort(([a], [b]) => a.localeCompare(b))
         .slice(-30);
@@ -291,8 +281,6 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
 
   return (
     <div style={{ background: bg, color: text, padding: '24px', maxWidth: '1400px', margin: '0 auto', minHeight: '100vh', fontFamily: 'system-ui, sans-serif' }}>
-
-      {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
         <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '8px' }}>📊 B2S Analytics Dashboard</h1>
         <p style={{ color: muted, fontSize: '14px' }}>
@@ -301,7 +289,6 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         </p>
       </div>
 
-      {/* Stat Cards - Now with sBTC Bridge */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '32px' }}>
         {statCards.map(card_ => (
           <div key={card_.title} style={{
@@ -321,7 +308,6 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         ))}
       </div>
 
-      {/* sBTC Bridge Stats Highlight */}
       {bridgeHistory.length > 0 && (
         <div style={{ 
           background: 'linear-gradient(135deg, #f7931a20, #f59e0b20)', 
@@ -360,7 +346,6 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         </div>
       )}
 
-      {/* Charts Row 1 - Daily TX Activity & Cumulative */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
         <div style={{ background: card, border: `1px solid ${border}`, borderRadius: '12px', padding: '20px' }}>
           <h3 style={{ marginBottom: '16px', fontSize: '16px' }}>⚡ Daily Transaction Activity</h3>
@@ -407,7 +392,6 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         </div>
       </div>
 
-      {/* Charts Row 2 - sBTC Bridge Volume */}
       <div style={{ display: 'grid', gridTemplateColumns: bridgeHistory.length > 0 ? '1fr 1fr' : '1fr', gap: '20px', marginBottom: '20px' }}>
         {bridgeHistory.length > 0 && (
           <div style={{ background: card, border: `1px solid ${border}`, borderRadius: '12px', padding: '20px' }}>
@@ -434,7 +418,6 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
           </div>
         )}
 
-        {/* Cumulative sBTC Bridge Volume */}
         {bridgeHistory.length > 0 && (
           <div style={{ background: card, border: `1px solid ${border}`, borderRadius: '12px', padding: '20px' }}>
             <h3 style={{ marginBottom: '16px', fontSize: '16px' }}>📊 Cumulative sBTC Bridged</h3>
@@ -460,7 +443,6 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         )}
       </div>
 
-      {/* Charts Row 3 - Holder Distribution & Contract Activity */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
         <div style={{ background: card, border: `1px solid ${border}`, borderRadius: '12px', padding: '20px' }}>
           <h3 style={{ marginBottom: '16px', fontSize: '16px' }}>🥧 Holder Distribution</h3>
@@ -511,12 +493,9 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         </div>
       </div>
 
-      {/* Footer */}
       <div style={{ textAlign: 'center', marginTop: '32px', color: muted, fontSize: '13px' }}>
         Data sourced from Hiro Mainnet API · Contract: {TOKEN_CONTRACT} · sBTC Bridge: {BRIDGE_CONTRACT}
       </div>
     </div>
   );
 };
-
-export default AnalyticsDashboard;
