@@ -173,4 +173,4 @@ MIT — See [LICENSE](./LICENSE)
 
 ---
 
-**Built for #StacksBuilderRewards March 2026 🏆**
+**Built for #StacksBuilderRewards March 2026 🏆**\n## APY Chart\nReal-time APY from b2s-staking-vault-v2 — 12.5% base, up to 37.5% with lock multipliers.
