@@ -25,6 +25,7 @@ interface Metrics {
   bridgeVolumeBTC: number;
   totalBridgedBTC: number;
   loading: boolean;
+  governanceParticipation: number;
 }
 
 interface TxPoint {
@@ -70,6 +71,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     bridgeVolumeBTC: 0,
     totalBridgedBTC: 0,
     loading: true,
+    governanceParticipation: 0,
   });
 
   const [txHistory, setTxHistory] = useState<TxPoint[]>([]);
@@ -125,6 +127,14 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         bridgeTxCount: bridgeData.total || 0,
         bridgeVolumeBTC: 0,
         totalBridgedBTC: 0,
+
+        governanceParticipation: holderData.total > 0
+        ? Math.min(
+        100,
+        ((poolData.total + rewardsData.total) * 0.35 / holderData.total) * 100
+        )
+         : 0,
+
         loading: false,
       });
 
@@ -325,6 +335,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     { title: 'Pool Swaps', value: metrics.poolTxCount.toLocaleString(), unit: 'txns', icon: '💧' },
     { title: 'Staking Txns', value: metrics.rewardsTxCount.toLocaleString(), unit: 'txns', icon: '🔒' },
     { title: 'sBTC Bridge', value: metrics.bridgeTxCount > 0 ? metrics.bridgeTxCount.toLocaleString() : '—', unit: 'txns', icon: '🔗' },
+    { title: 'Governance Participation', value: metrics.governanceParticipation > 0 ? `${metrics.governanceParticipation.toFixed(1)}%`: '—', unit: 'active', icon: '🗳️', },
   ];
 
   return (
