@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@stacks/blockchain-api-client": "^7.0.0",
+    "@wkalidev/b2s-contracts": "^1.1.0",
     "recharts": "^2.15.4"
   },
   "devDependencies": {
