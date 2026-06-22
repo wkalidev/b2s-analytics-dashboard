@@ -159,10 +159,11 @@ npm test
 
 | Repo | Description |
 |---|---|
-| [base2stacks-tracker](https://github.com/wkalidev/base2stacks-tracker) | Main frontend — [live app](https://base2stacks-tracker.vercel.app) |
-| [b2s-token-contract](https://github.com/wkalidev/b2s-token-contract) | All Clarity smart contracts |
-| [stacks-clarity-toolkit](https://github.com/wkalidev/stacks-clarity-toolkit) | Clarity dev toolkit |
+| [base2stacks-tracker](https://github.com/wkalidev/base2stacks-tracker) | Main DeFi platform — [live app](https://base2stacks-tracker.vercel.app) |
+| [b2s-token-contract](https://github.com/wkalidev/b2s-token-contract) | SDK & Clarity contracts — [@wkalidev/b2s-contracts](https://www.npmjs.com/package/@wkalidev/b2s-contracts) |
 | [b2s-staking-interface](https://github.com/wkalidev/b2s-staking-interface) | Staking UI components |
+| [b2s-nft-badges](https://github.com/wkalidev/b2s-nft-badges) | 567 NFT badge assets and hooks |
+| [stacks-clarity-toolkit](https://github.com/wkalidev/stacks-clarity-toolkit) | Clarity dev toolkit — [@wkalidev/stacks-clarity-toolkit](https://www.npmjs.com/package/@wkalidev/stacks-clarity-toolkit) |
 
 ---
 

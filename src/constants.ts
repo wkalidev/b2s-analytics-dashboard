@@ -1,4 +1,4 @@
-export const MAINNET_CONTRACT = 'SP936YWJPST8GB8FFRCN7CC6P2YR5K6NNBAARQ96'
+﻿export const MAINNET_CONTRACT = 'SP1V72500C63KN9E348QDK9X879MASSTN0J3KBQ5N'
 export const API_BASE = 'https://base2stacks-tracker.vercel.app/api'
 export const HIRO_API = 'https://api.hiro.so'
 export const REFRESH_INTERVAL = 30_000

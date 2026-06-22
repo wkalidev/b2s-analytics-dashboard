@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import {
   LineChart, Line, AreaChart, Area, PieChart, Pie, Cell,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 
 const HIRO_API = 'https://api.hiro.so';
-const CONTRACT = 'SP936YWJPST8GB8FFRCN7CC6P2YR5K6NNBAARQ96';
+const CONTRACT = 'SP1V72500C63KN9E348QDK9X879MASSTN0J3KBQ5N';
 const TOKEN_CONTRACT = `${CONTRACT}.b2s-token`;
 const POOL_CONTRACT = `${CONTRACT}.b2s-liquidity-pool-v5`;
 const REWARDS_CONTRACT = `${CONTRACT}.b2s-rewards-distributor-v3`;
