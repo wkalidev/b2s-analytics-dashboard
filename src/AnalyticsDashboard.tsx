@@ -81,21 +81,22 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   const [lastUpdate, setLastUpdate] = useState<string>('');
 
   const parseBTCAmount = (tx: any): number => {
-    try {
-      if (tx.events && tx.events.length > 0) {
-        for (const event of tx.events) {
-          if (event.type === 'contract_event' && 
-              event.contract_event?.topic === 'bridge-inbound') {
-            const amount = parseInt(event.contract_event?.value?.repr?.match(/\d+/)?.[0] || '0');
-            return amount / 100_000_000;
-          }
+  try {
+    if (tx.events && tx.events.length > 0) {
+      for (const event of tx.events) {
+        if (event.type === 'contract_event' && 
+            event.contract_event?.topic === 'bridge-inbound') {
+          const repr = event.contract_event?.value?.repr || '';
+          const amount = parseInt(repr.match(/\d+/)?.[0] || '0');
+          return amount / 100_000_000;
         }
       }
-    } catch (err) {
-      console.error('Error parsing BTC amount:', err);
     }
-    return 0;
-  };
+  } catch (err) {
+    console.error('Error parsing BTC amount:', err);
+  }
+  return 0;
+};
 
   const fetchMetrics = useCallback(async () => {
     try {
